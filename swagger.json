@@ -1,0 +1,174 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "Psychiatry API",
+      "version": "1.0.0",
+      "description": "API documentation for Psychiatry application"
+    },
+    "basePath": "/",
+    "tags": [
+      {
+        "name": "Patients",
+        "description": "Operations related to patients"
+      },
+      {
+        "name": "Psychiatrists",
+        "description": "Operations related to psychiatrists"
+      }
+    ],
+    "paths": {
+      "/api/patients": {
+        "post": {
+          "tags": ["Patients"],
+          "summary": "Register a new patient",
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "description": "Patient details",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/PatientRegistration"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "Patient registered successfully",
+              "schema": {
+                "$ref": "#/definitions/SuccessResponse"
+              }
+            },
+            "400": {
+              "description": "Invalid input",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "/api/psychiatrists/{hospitalId}": {
+        "get": {
+          "tags": ["Psychiatrists"],
+          "summary": "Fetch psychiatrists and patient details for a hospital",
+          "parameters": [
+            {
+              "name": "hospitalId",
+              "in": "path",
+              "description": "ID of the hospital",
+              "required": true,
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "schema": {
+                "$ref": "#/definitions/PsychiatristDetailsResponse"
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "PatientRegistration": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 15,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,15}$"
+          },
+          "photo": {
+            "type": "string"
+          },
+          "hospital_id": {
+            "type": "integer"
+          }
+        },
+        "required": ["name", "address", "email", "password", "hospital_id"]
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "patientId": {
+            "type": "integer"
+          }
+        }
+      },
+      "PsychiatristDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "hospitalName": {
+            "type": "string"
+          },
+          "totalPsychiatristsCount": {
+            "type": "integer"
+          },
+          "totalPatientsCount": {
+            "type": "integer"
+          },
+          "psychiatristDetails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/PsychiatristDetail"
+            }
+          }
+        }
+      },
+      "PsychiatristDetail": {
+        "type": "object",
+        "properties": {
+          "psychiatristId": {
+            "type": "integer"
+          },
+          "psychiatristName": {
+            "type": "string"
+          },
+          "patientsCount": {
+            "type": "integer"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+  
